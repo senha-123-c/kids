@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Quiz Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f8ff;
+            margin: 0;
+        }
+        .quiz-container {
+            background: #ffebcd;
+            border: 5px solid #ffa07a;
+            border-radius: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .hidden {
+            display: none;
+        }
+        h1 {
+            color: #ff4500;
+        }
+        .options button {
+            background: #87cefa;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .options button.correct {
+            background: #32cd32;
+        }
+        .options button.wrong {
+            background: #ff6347;
+        }
+        #next-btn, #start-btn {
+            margin-top: 15px;
+            background: #32cd32;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #next-btn:hover, #start-btn:hover {
+            background: #228b22;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container" id="start-container">
+        <h1>Welcome to the Kids Quiz Game!</h1>
+        <button id="start-btn">Start Quiz</button>
+    </div>
+
+    <div class="quiz-container hidden" id="quiz-container">
+        <h1>Fun Quiz for Kids!</h1>
+        <div id="question-container">
+            <p id="question"></p>
+            <div class="options" id="options"></div>
+        </div>
+        <button id="next-btn">Next Question</button>
+    </div>
+
+    <div class="quiz-container hidden" id="score-container">
+        <h1>Quiz Completed!</h1>
+        <p id="score"></p>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "What is the capital of France?", answers: ["Berlin", "Madrid", "Paris", "Rome"], correct: 2 },
+            { question: "What animal says 'Meow'?", answers: ["Dog", "Cat", "Cow", "Duck"], correct: 1 },
+            { question: "What color is the sky on a clear day?", answers: ["Blue", "Green", "Yellow", "Red"], correct: 0 },
+            { question: "How many legs does a spider have?", answers: ["6", "8", "4", "10"], correct: 1 },
+            { question: "Which planet is known as the Red Planet?", answers: ["Earth", "Mars", "Jupiter", "Venus"], correct: 1 },
+            { question: "What is 5 + 3?", answers: ["7", "8", "9", "10"], correct: 1 },
+            { question: "Which animal is known as the 'King of the Jungle'?", answers: ["Lion", "Elephant", "Tiger", "Giraffe"], correct: 0 },
+            { question: "What is the color of a banana?", answers: ["Yellow", "Green", "Blue", "Purple"], correct: 0 },
+            { question: "Which shape has three sides?", answers: ["Square", "Triangle", "Circle", "Rectangle"], correct: 1 },
+            { question: "What is 2 x 5?", answers: ["15", "20", "10", "25"], correct: 2 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const startButton = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const startContainer = document.getElementById('start-container');
+        const scoreContainer = document.getElementById('score-container');
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const nextButton = document.getElementById('next-btn');
+        const scoreElement = document.getElementById('score');
+
+        startButton.addEventListener('click', startQuiz);
+        nextButton.addEventListener('click', nextQuestion);
+
+        function startQuiz() {
+            startContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            questionElement.textContent = question.question;
+            optionsElement.innerHTML = "";
+
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.classList.add('option');
+                button.addEventListener('click', () => selectAnswer(index));
+                optionsElement.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option');
+            if (selectedIndex === question.correct) {
+                buttons[selectedIndex].classList.add('correct');
+                score++;
+            } else {
+                buttons[selectedIndex].classList.add('wrong');
+                buttons[question.correct].classList.add('correct');
+            }
+            nextButton.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+                nextButton.classList.add('hidden');
+            } else {
+                quizContainer.classList.add('hidden');
+                scoreContainer.classList.remove('hidden');
+                scoreElement.textContent = `You scored ${score} out of ${questions.length}!`;
+            }
+        }
+    </script>
+</body>
+</html>
